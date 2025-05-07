@@ -18,6 +18,9 @@ public class Aluguel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private LocalDate dataAluguel;
+
+    @Column(name = "data_devolucao_real")
+    private LocalDate dataDevolucaoReal;
     private LocalDate dataDevolucao;
     private Boolean devolvido;
     private Double valor;

@@ -16,6 +16,7 @@ public class AluguelResponseDTO {
     private String nomeCliente;
     private LocalDate dataAluguel;
     private LocalDate dataDevolucao;
+    private LocalDate dataDevolucaoReal;
     private boolean devolvido;
     private double valor;
 }

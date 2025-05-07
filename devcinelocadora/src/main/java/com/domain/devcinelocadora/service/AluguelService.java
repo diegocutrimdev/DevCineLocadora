@@ -8,5 +8,7 @@ public interface AluguelService {
 
     Aluguel realizarAluguel(Long clienteId, Long filmeId);
 
+    Aluguel registrarDevolucao(Long aluguelId);
+
     List<Aluguel> listarTodos();
 }

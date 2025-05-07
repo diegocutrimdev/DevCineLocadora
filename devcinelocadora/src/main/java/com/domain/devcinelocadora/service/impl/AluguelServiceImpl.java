@@ -11,8 +11,8 @@ import com.domain.devcinelocadora.repository.FilmeRepository;
 import com.domain.devcinelocadora.repository.AluguelRepository;
 import com.domain.devcinelocadora.repository.ClienteRepository;
 
-import java.time.LocalDate;
 import java.util.List;
+import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
@@ -50,6 +50,32 @@ public class AluguelServiceImpl implements AluguelService {
                 .devolvido(false)
                 .valor(valor)
                 .build();
+        return aluguelRepository.save(aluguel);
+    }
+
+
+    @Override
+    public Aluguel registrarDevolucao(Long aluguelId) {
+        Aluguel aluguel = aluguelRepository.findById(aluguelId)
+                .orElseThrow(() -> new EntityNotFoundException("Aluguel não encontrado com ID: " + aluguelId));
+
+        if (aluguel.getDevolvido()) {
+            throw new IllegalStateException("Filme já foi devolvido.");
+        }
+
+        aluguel.setDevolvido(true);
+        aluguel.setDataDevolucaoReal(LocalDate.now());
+
+        Filme filme = aluguel.getFilme();
+        filme.setEstoque(filme.getEstoque() + 1);
+        filmeRepository.save(filme);
+
+        if (aluguel.getDataDevolucaoReal().isAfter(aluguel.getDataDevolucao())) {
+            long diasAtraso = aluguel.getDataDevolucao().until(aluguel.getDataDevolucaoReal()).getDays();
+            double multa = diasAtraso * 2.0;
+            aluguel.setValor(aluguel.getValor() + multa);
+        }
+
         return aluguelRepository.save(aluguel);
     }
 

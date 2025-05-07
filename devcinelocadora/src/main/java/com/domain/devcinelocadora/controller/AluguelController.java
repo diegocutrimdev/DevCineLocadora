@@ -21,7 +21,6 @@ public class AluguelController {
     @PostMapping
     public AluguelResponseDTO realizarAluguel(@RequestBody AluguelRequestDTO dto) {
         Aluguel aluguel = aluguelService.realizarAluguel(dto.getClienteId(), dto.getFilmeId());
-
         return toDTO(aluguel);
     }
 
@@ -32,6 +31,13 @@ public class AluguelController {
                 .stream()
                 .map(this::toDTO)
                 .collect(toList());
+    }
+
+
+    @PutMapping("/{id}/devolucao")
+    public AluguelResponseDTO devolverFilme(@PathVariable Long id) {
+        Aluguel aluguel = aluguelService.registrarDevolucao(id);
+        return toDTO(aluguel);
     }
 
 
