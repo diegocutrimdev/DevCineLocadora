@@ -10,5 +10,7 @@ public interface FilmeService {
 
     List<Filme> listarTodos();
 
+    Filme buscarPorId(Long id);
+
     List<Filme> listarDisponiveis();
 }

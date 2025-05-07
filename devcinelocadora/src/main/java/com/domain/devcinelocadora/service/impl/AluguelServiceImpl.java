@@ -1,4 +1,61 @@
 package com.domain.devcinelocadora.service.impl;
 
-public class AluguelServiceImpl {
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import com.domain.devcinelocadora.model.Filme;
+import com.domain.devcinelocadora.model.Aluguel;
+import com.domain.devcinelocadora.model.Cliente;
+import jakarta.persistence.EntityNotFoundException;
+import com.domain.devcinelocadora.service.AluguelService;
+import com.domain.devcinelocadora.repository.FilmeRepository;
+import com.domain.devcinelocadora.repository.AluguelRepository;
+import com.domain.devcinelocadora.repository.ClienteRepository;
+
+import java.time.LocalDate;
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+public class AluguelServiceImpl implements AluguelService {
+
+    private final FilmeRepository filmeRepository;
+    private final AluguelRepository aluguelRepository;
+    private final ClienteRepository clienteRepository;
+
+
+    @Override
+    public Aluguel realizarAluguel(Long clienteId, Long filmeId) {
+        Cliente cliente = clienteRepository.findById(clienteId)
+                .orElseThrow(() -> new EntityNotFoundException("Cliente não encontrado com ID: " + clienteId));
+
+        Filme filme = filmeRepository.findById(filmeId)
+                .orElseThrow(() -> new EntityNotFoundException("Filme não encontrado com ID: " + filmeId));
+
+        if (filme.getEstoque() == null || filme.getEstoque() <= 0) {
+            throw new IllegalStateException("Filme sem estoque disponível");
+        }
+
+        filme.setEstoque(filme.getEstoque() - 1);
+        filmeRepository.save(filme);
+
+        LocalDate hoje = LocalDate.now();
+        LocalDate dataDevolucao = filme.getLancamento() ? hoje.plusDays(1) : hoje.plusDays(3);
+        double valor = filme.getLancamento() ? 7.0 : 5.0;
+
+        Aluguel aluguel = Aluguel.builder()
+                .cliente(cliente)
+                .filme(filme)
+                .dataAluguel(hoje)
+                .dataDevolucao(dataDevolucao)
+                .devolvido(false)
+                .valor(valor)
+                .build();
+        return aluguelRepository.save(aluguel);
+    }
+
+
+    @Override
+    public List<Aluguel> listarTodos() {
+        return aluguelRepository.findAll();
+    }
 }

@@ -3,6 +3,7 @@ package com.domain.devcinelocadora.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.domain.devcinelocadora.model.Filme;
+import jakarta.persistence.EntityNotFoundException;
 import com.domain.devcinelocadora.service.FilmeService;
 import com.domain.devcinelocadora.repository.FilmeRepository;
 
@@ -14,15 +15,25 @@ public class FilmeServiceImpl implements FilmeService {
 
     private final FilmeRepository filmeRepository;
 
+
     @Override
     public Filme salvar(Filme filme) {
         return filmeRepository.save(filme);
     }
 
+
     @Override
     public List<Filme> listarTodos() {
         return filmeRepository.findAll();
     }
+
+
+    @Override
+    public Filme buscarPorId(Long id) {
+        return filmeRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Filme não encontrado com ID: " + id));
+    }
+
 
     @Override
     public List<Filme> listarDisponiveis() {

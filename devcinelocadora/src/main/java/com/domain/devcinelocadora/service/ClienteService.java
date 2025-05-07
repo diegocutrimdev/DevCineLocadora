@@ -9,4 +9,6 @@ public interface ClienteService {
     Cliente salvar(Cliente cliente);
 
     List<Cliente> listarTodos();
+
+    Cliente buscarPorId(Long id);
 }
