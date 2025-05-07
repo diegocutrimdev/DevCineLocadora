@@ -6,7 +6,7 @@ import java.util.List;
 
 public interface AluguelService {
 
-    Aluguel salvar(Aluguel aluguel);
+    Aluguel realizarAluguel(Long clienteId, Long filmeId);
 
     List<Aluguel> listarTodos();
 }
