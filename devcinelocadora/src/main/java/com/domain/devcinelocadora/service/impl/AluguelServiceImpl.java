@@ -18,6 +18,11 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public class AluguelServiceImpl implements AluguelService {
 
+    private static final double MULTA_POR_DIA = 2.0;
+    private static final double VALOR_ALUGUEL_PADRAO = 5.0;
+    private static final double VALOR_ALUGUEL_LANCAMENTO = 7.0;
+
+
     private final FilmeRepository filmeRepository;
     private final AluguelRepository aluguelRepository;
     private final ClienteRepository clienteRepository;
@@ -29,18 +34,18 @@ public class AluguelServiceImpl implements AluguelService {
 
         Filme filme = filmeRepository.findById(filmeId).orElseThrow(() -> new EntityNotFoundException("Filme não encontrado com ID: " + filmeId));
 
-        if (filme.getEstoque() == null || filme.getEstoque() <= 0) {
+        if (filme.getEstoque() == null || filme.getEstoque() <= 0)
             throw new IllegalStateException("Filme sem estoque disponível");
-        }
 
         filme.setEstoque(filme.getEstoque() - 1);
         filmeRepository.save(filme);
 
         LocalDate hoje = LocalDate.now();
-        LocalDate dataDevolucao = filme.getLancamento() ? hoje.plusDays(1) : hoje.plusDays(3);
-        double valor = filme.getLancamento() ? 7.0 : 5.0;
+        LocalDate dataDevolucao = calcularDataDevolucao(filme, hoje);
+        double valor = calcularValorAluguel(filme);
 
         Aluguel aluguel = Aluguel.builder().cliente(cliente).filme(filme).dataAluguel(hoje).dataDevolucao(dataDevolucao).devolvido(false).valor(valor).build();
+
         return aluguelRepository.save(aluguel);
     }
 
@@ -49,9 +54,7 @@ public class AluguelServiceImpl implements AluguelService {
     public Aluguel registrarDevolucao(Long aluguelId) {
         Aluguel aluguel = aluguelRepository.findById(aluguelId).orElseThrow(() -> new EntityNotFoundException("Aluguel não encontrado com ID: " + aluguelId));
 
-        if (aluguel.getDevolvido()) {
-            throw new IllegalStateException("Filme já foi devolvido.");
-        }
+        if (aluguel.getDevolvido()) throw new IllegalStateException("Filme já foi devolvido.");
 
         aluguel.setDevolvido(true);
         aluguel.setDataDevolucaoReal(LocalDate.now());
@@ -62,7 +65,7 @@ public class AluguelServiceImpl implements AluguelService {
 
         if (aluguel.getDataDevolucaoReal().isAfter(aluguel.getDataDevolucao())) {
             long diasAtraso = aluguel.getDataDevolucao().until(aluguel.getDataDevolucaoReal()).getDays();
-            double multa = diasAtraso * 2.0;
+            double multa = diasAtraso * MULTA_POR_DIA;
             aluguel.setValor(aluguel.getValor() + multa);
         }
 
@@ -85,5 +88,15 @@ public class AluguelServiceImpl implements AluguelService {
     @Override
     public List<Aluguel> listarAtrasados() {
         return aluguelRepository.findByDevolvidoFalseAndDataDevolucaoBefore(LocalDate.now());
+    }
+
+
+    private static double calcularValorAluguel(Filme filme) {
+        return filme.getLancamento() ? VALOR_ALUGUEL_LANCAMENTO : VALOR_ALUGUEL_PADRAO;
+    }
+
+
+    private static LocalDate calcularDataDevolucao(Filme filme, LocalDate hoje) {
+        return filme.getLancamento() ? hoje.plusDays(1) : hoje.plusDays(3);
     }
 }

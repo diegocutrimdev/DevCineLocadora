@@ -10,6 +10,7 @@ import jakarta.persistence.*;
 @AllArgsConstructor
 
 @Entity
+@Table(name = "filme")
 public class Filme {
 
     @Id
@@ -18,6 +19,8 @@ public class Filme {
     private String titulo;
     private String diretor;
     private String genero;
+
+    @Column(name = "ano_lancamento")
     private Integer anoLancamento;
     private Boolean lancamento;
     private Integer estoque;

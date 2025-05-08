@@ -12,6 +12,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 
 @Entity
+@Table(name = "cliente")
 public class Cliente {
 
     @Id
@@ -24,5 +25,7 @@ public class Cliente {
 
     @Column(unique = true)
     private String cpf;
+
+    @Column(name = "data_nascimento")
     private LocalDate dataNascimento;
 }
