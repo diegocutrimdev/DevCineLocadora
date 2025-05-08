@@ -22,7 +22,6 @@ public class ClienteController {
                 .nome(dto.getNome())
                 .cpf(dto.getCpf())
                 .build();
-
         Cliente clienteSalvo = clienteService.salvar(cliente);
         return toDTO(clienteSalvo);
     }
@@ -41,5 +40,4 @@ public class ClienteController {
                 .cpf(cliente.getCpf())
                 .build();
     }
-
 }
