@@ -1,14 +1,15 @@
 package com.domain.devcinelocadora.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import io.swagger.v3.oas.annotations.Operation;
 import com.domain.devcinelocadora.model.Aluguel;
 import org.springframework.web.bind.annotation.*;
 import com.domain.devcinelocadora.dto.AluguelRequestDTO;
 import com.domain.devcinelocadora.service.AluguelService;
 import com.domain.devcinelocadora.dto.AluguelResponseDTO;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -28,7 +29,7 @@ public class AluguelController {
             @ApiResponse(responseCode = "200", description = "Aluguel realizado com sucesso"),
             @ApiResponse(responseCode = "400", description = "Dados inválidos")
     })
-    public AluguelResponseDTO realizarAluguel(@RequestBody AluguelRequestDTO dto) {
+    public AluguelResponseDTO realizarAluguel(@Valid @RequestBody AluguelRequestDTO dto) {
         Aluguel aluguel = aluguelService.realizarAluguel(dto.getClienteId(), dto.getFilmeId());
         return toDTO(aluguel);
     }

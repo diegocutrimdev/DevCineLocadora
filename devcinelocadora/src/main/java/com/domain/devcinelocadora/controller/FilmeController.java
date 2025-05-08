@@ -1,14 +1,15 @@
 package com.domain.devcinelocadora.controller;
 
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import com.domain.devcinelocadora.model.Filme;
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.web.bind.annotation.*;
-import com.domain.devcinelocadora.service.FilmeService;
 import com.domain.devcinelocadora.dto.FilmeRequestDTO;
+import com.domain.devcinelocadora.service.FilmeService;
 import com.domain.devcinelocadora.dto.FilmeResponseDTO;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 
 import java.util.List;
 
@@ -25,7 +26,7 @@ public class FilmeController {
             @ApiResponse(responseCode = "200", description = "Filme cadastrado com sucesso"),
             @ApiResponse(responseCode = "400", description = "Dados inválidos")
     })
-    public FilmeResponseDTO cadastrarFilme(@RequestBody FilmeRequestDTO dto) {
+    public FilmeResponseDTO cadastrarFilme(@Valid @RequestBody FilmeRequestDTO dto) {
         Filme filme = Filme.builder()
                 .titulo(dto.getTitulo())
                 .diretor(dto.getDiretor())
