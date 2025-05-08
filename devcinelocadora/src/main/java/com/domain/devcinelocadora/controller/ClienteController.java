@@ -1,5 +1,8 @@
 package com.domain.devcinelocadora.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import com.domain.devcinelocadora.model.Cliente;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +20,11 @@ public class ClienteController {
     private final ClienteService clienteService;
 
     @PostMapping
+    @Operation(summary = "Cadastra um novo cliente")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Cliente cadastrado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos")
+    })
     public ClienteResponseDTO cadastrarCliente(@RequestBody ClienteRequestDTO dto) {
         Cliente cliente = Cliente.builder()
                 .nome(dto.getNome())
@@ -28,6 +36,7 @@ public class ClienteController {
 
 
     @GetMapping
+    @Operation(summary = "Lista todos os clientes cadastrados")
     public List<ClienteResponseDTO> listarClientes() {
         return clienteService.listarTodos().stream().map(this::toDTO).toList();
     }

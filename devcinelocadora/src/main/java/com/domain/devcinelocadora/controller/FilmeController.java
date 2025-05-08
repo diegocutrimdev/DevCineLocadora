@@ -1,5 +1,8 @@
 package com.domain.devcinelocadora.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import com.domain.devcinelocadora.model.Filme;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +20,11 @@ public class FilmeController {
     private final FilmeService filmeService;
 
     @PostMapping
+    @Operation(summary = "Cadastra um novo filme")
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "Filme cadastrado com sucesso"),
+            @ApiResponse(responseCode = "400", description = "Dados inválidos")
+    })
     public FilmeResponseDTO cadastrarFilme(@RequestBody FilmeRequestDTO dto) {
         Filme filme = Filme.builder()
                 .titulo(dto.getTitulo())
@@ -33,6 +41,7 @@ public class FilmeController {
 
 
     @GetMapping
+    @Operation(summary = "Lista todos os filmes disponíveis")
     public List<FilmeResponseDTO> listarFilmes() {
         return filmeService.listarTodos().stream().map(this::toDTO).toList();
     }
