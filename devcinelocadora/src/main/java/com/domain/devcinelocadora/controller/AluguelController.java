@@ -8,6 +8,7 @@ import com.domain.devcinelocadora.service.AluguelService;
 import com.domain.devcinelocadora.dto.AluguelResponseDTO;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.toList;
 
@@ -38,6 +39,20 @@ public class AluguelController {
     public AluguelResponseDTO devolverFilme(@PathVariable Long id) {
         Aluguel aluguel = aluguelService.registrarDevolucao(id);
         return toDTO(aluguel);
+    }
+
+
+    @GetMapping("em-aberto")
+    public List<AluguelResponseDTO> listarEmAberto() {
+        return aluguelService.listarEmAberto().stream().map(this::toDTO).toList();
+    }
+
+
+    @GetMapping("/atrasados")
+    public List<AluguelResponseDTO> listarAtrasados() {
+        return aluguelService.listarAtrasados().stream()
+                .map(this::toDTO)
+                .collect(Collectors.toList());
     }
 
 

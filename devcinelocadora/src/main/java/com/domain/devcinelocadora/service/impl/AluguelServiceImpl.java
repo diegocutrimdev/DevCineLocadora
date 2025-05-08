@@ -25,11 +25,9 @@ public class AluguelServiceImpl implements AluguelService {
 
     @Override
     public Aluguel realizarAluguel(Long clienteId, Long filmeId) {
-        Cliente cliente = clienteRepository.findById(clienteId)
-                .orElseThrow(() -> new EntityNotFoundException("Cliente não encontrado com ID: " + clienteId));
+        Cliente cliente = clienteRepository.findById(clienteId).orElseThrow(() -> new EntityNotFoundException("Cliente não encontrado com ID: " + clienteId));
 
-        Filme filme = filmeRepository.findById(filmeId)
-                .orElseThrow(() -> new EntityNotFoundException("Filme não encontrado com ID: " + filmeId));
+        Filme filme = filmeRepository.findById(filmeId).orElseThrow(() -> new EntityNotFoundException("Filme não encontrado com ID: " + filmeId));
 
         if (filme.getEstoque() == null || filme.getEstoque() <= 0) {
             throw new IllegalStateException("Filme sem estoque disponível");
@@ -42,22 +40,14 @@ public class AluguelServiceImpl implements AluguelService {
         LocalDate dataDevolucao = filme.getLancamento() ? hoje.plusDays(1) : hoje.plusDays(3);
         double valor = filme.getLancamento() ? 7.0 : 5.0;
 
-        Aluguel aluguel = Aluguel.builder()
-                .cliente(cliente)
-                .filme(filme)
-                .dataAluguel(hoje)
-                .dataDevolucao(dataDevolucao)
-                .devolvido(false)
-                .valor(valor)
-                .build();
+        Aluguel aluguel = Aluguel.builder().cliente(cliente).filme(filme).dataAluguel(hoje).dataDevolucao(dataDevolucao).devolvido(false).valor(valor).build();
         return aluguelRepository.save(aluguel);
     }
 
 
     @Override
     public Aluguel registrarDevolucao(Long aluguelId) {
-        Aluguel aluguel = aluguelRepository.findById(aluguelId)
-                .orElseThrow(() -> new EntityNotFoundException("Aluguel não encontrado com ID: " + aluguelId));
+        Aluguel aluguel = aluguelRepository.findById(aluguelId).orElseThrow(() -> new EntityNotFoundException("Aluguel não encontrado com ID: " + aluguelId));
 
         if (aluguel.getDevolvido()) {
             throw new IllegalStateException("Filme já foi devolvido.");
@@ -83,5 +73,17 @@ public class AluguelServiceImpl implements AluguelService {
     @Override
     public List<Aluguel> listarTodos() {
         return aluguelRepository.findAll();
+    }
+
+
+    @Override
+    public List<Aluguel> listarEmAberto() {
+        return aluguelRepository.findByDevolvidoFalse();
+    }
+
+
+    @Override
+    public List<Aluguel> listarAtrasados() {
+        return aluguelRepository.findByDevolvidoFalseAndDataDevolucaoBefore(LocalDate.now());
     }
 }

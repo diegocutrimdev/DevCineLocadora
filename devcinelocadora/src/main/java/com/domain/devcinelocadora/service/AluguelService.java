@@ -11,4 +11,8 @@ public interface AluguelService {
     Aluguel registrarDevolucao(Long aluguelId);
 
     List<Aluguel> listarTodos();
+
+    List<Aluguel> listarEmAberto();
+
+    List<Aluguel> listarAtrasados();
 }
