@@ -1,5 +1,6 @@
 package com.domain.devcinelocadora.service.impl;
 
+import com.domain.devcinelocadora.exception.FilmeNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.domain.devcinelocadora.model.Filme;
@@ -31,7 +32,7 @@ public class FilmeServiceImpl implements FilmeService {
     @Override
     public Filme buscarPorId(Long id) {
         return filmeRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Filme não encontrado com ID: " + id));
+                .orElseThrow(() -> new FilmeNotFoundException("Filme não encontrado com ID: " + id));
     }
 
 

@@ -1,5 +1,6 @@
 package com.domain.devcinelocadora.service.impl;
 
+import com.domain.devcinelocadora.exception.AluguelNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.domain.devcinelocadora.model.Filme;
@@ -52,7 +53,8 @@ public class AluguelServiceImpl implements AluguelService {
 
     @Override
     public Aluguel registrarDevolucao(Long aluguelId) {
-        Aluguel aluguel = aluguelRepository.findById(aluguelId).orElseThrow(() -> new EntityNotFoundException("Aluguel não encontrado com ID: " + aluguelId));
+        Aluguel aluguel = aluguelRepository.findById(aluguelId).orElseThrow(
+                () -> new AluguelNotFoundException("Aluguel não encontrado com ID: " + aluguelId));
 
         if (aluguel.getDevolvido()) throw new IllegalStateException("Filme já foi devolvido.");
 

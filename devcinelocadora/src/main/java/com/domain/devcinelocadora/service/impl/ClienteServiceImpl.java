@@ -3,9 +3,9 @@ package com.domain.devcinelocadora.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.domain.devcinelocadora.model.Cliente;
-import jakarta.persistence.EntityNotFoundException;
 import com.domain.devcinelocadora.service.ClienteService;
 import com.domain.devcinelocadora.repository.ClienteRepository;
+import com.domain.devcinelocadora.exception.ClienteNotFoundException;
 
 import java.util.List;
 
@@ -31,6 +31,6 @@ public class ClienteServiceImpl implements ClienteService {
     @Override
     public Cliente buscarPorId(Long id) {
         return clienteRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Cliente não encontrado com ID: " + id));
+                .orElseThrow(() -> new ClienteNotFoundException("Cliente não encontrado com ID: " + id));
     }
 }
